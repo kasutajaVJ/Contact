@@ -6,18 +6,39 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './fetch-data.component.html'
 })
 export class FetchDataComponent {
-  public forecasts: WeatherForecast[];
+  public contacts: IContact[];
+  public searchTerm: string = "";
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<WeatherForecast[]>(baseUrl + 'api/SampleData/WeatherForecasts').subscribe(result => {
-      this.forecasts = result;
-    }, error => console.error(error));
+  constructor(private _http: HttpClient, @Inject('BASE_URL') private _baseUrl: string) {
+    this._reloadList();
+  }
+
+  private _reloadList() {
+    this._http.get<IContact[]>(this._baseUrl + 'api/Contacts', {
+      params: {
+        term: this.searchTerm
+      }
+    })
+      .subscribe(result => {
+        this.contacts = result;
+      }, error => console.error(error));
+  }
+
+  public delete(contact: IContact, i: number) {
+    this._http.delete(this._baseUrl + `api/Contacts/${contact.id}`)
+      .subscribe(result => {
+        this.contacts.splice(i-1, 1);
+      }, error => console.error(error));
+  }
+
+  public search() {
+    this._reloadList();
   }
 }
 
-interface WeatherForecast {
-  dateFormatted: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
+interface IContact {
+  id: string,
+  name: string;
+  defaultPhoneNumber: number;
+  defaultEmail: number;
 }

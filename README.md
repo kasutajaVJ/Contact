@@ -3,11 +3,13 @@
 ## DB
 
 Contact
+- Id
 - Name
-- PhoneNumbers [ { number: string, type: enum, default: boolean} ]
-- Emails [ { email: string, type: enum, default: boolean }]
+- PhoneNumbers [ { number: string, type: enum, isDefault: boolean} ]
+- Emails [ { email: string, type: enum, isDefault: boolean }]
 
 Contact (Easy)
+- Id
 - Name
 - PhoneNumber
 - Email 
@@ -23,10 +25,15 @@ Contact (Easy)
 
 [GET] /api/contacts?term={}
 [{
+	id,
 	name,
 	defaultPhoneNumber,
 	defaultEmail
 }]
+
+### Get item
+
+[GET] /api/contacts/{id}
 
 ### Create
 
