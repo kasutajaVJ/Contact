@@ -13,7 +13,10 @@ export class ContactDetailComponent {
 
   public contacts: IContact[];
 
-  public model = { } as IContact;
+  public model = {
+    phoneNumbers: [],
+    emails: []
+  } as IContact;
 
   public phoneTypes = ["work", "home"];
 
@@ -26,6 +29,8 @@ export class ContactDetailComponent {
   ngOnInit() {
     this.model.id = this._route.snapshot.params['id'];
 
+    console.log(this.model);
+
     if (this.model.id) {
       this._http.get<IContact>(this._baseUrl + `api/Contacts/${this.model.id}`)
         .subscribe(result => {
@@ -36,8 +41,6 @@ export class ContactDetailComponent {
     else {
       this.loading = false;
     }
-
-    
   }
 
   public addNumber() {

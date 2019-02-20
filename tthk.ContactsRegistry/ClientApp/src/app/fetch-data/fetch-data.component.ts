@@ -27,7 +27,7 @@ export class FetchDataComponent {
   public delete(contact: IContact, i: number) {
     this._http.delete(this._baseUrl + `api/Contacts/${contact.id}`)
       .subscribe(result => {
-        this.contacts.splice(i-1, 1);
+        this.contacts.splice(i, 1);
       }, error => console.error(error));
   }
 
