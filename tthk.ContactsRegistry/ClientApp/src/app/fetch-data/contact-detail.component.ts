@@ -13,33 +13,11 @@ export class ContactDetailComponent {
 
   public contacts: IContact[];
 
-  public model = {
-    id: "",
-    name: "test",
-    initials: "",
-    phoneNumber: "",
-    email: "",
-    phoneNumbers: [
-      {
-        number: "12341234",
-        isDefault: false
-      },
-      {
-        number: "34563456",
-        isDefault: true
-      }
-    ],
-    emails: [
-      {
-        email: "foo@mailinator.com",
-        isDefault: true
-      }
-    ]
-  } as IContact;
+  public model = { } as IContact;
 
   public phoneTypes = ["work", "home"];
 
-  public emailTypes = ["work", "span", "fun"];
+  public emailTypes = ["work", "spam", "fun"];
 
   constructor(private _http: HttpClient, @Inject('BASE_URL') private _baseUrl: string, private _route: ActivatedRoute, private _router: Router) {
 
@@ -113,11 +91,13 @@ interface IContact {
 interface IEmail {
   email: string;
   isDefault: boolean;
+  type: string;
 }
 
 interface IPhoneNumber {
   number: string;
   isDefault: boolean;
+  type: string;
 }
 
 interface IContact {

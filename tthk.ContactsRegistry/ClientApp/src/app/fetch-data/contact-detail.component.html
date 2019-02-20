@@ -39,9 +39,9 @@
             <input class="form-control" [(ngModel)]="phoneNumber.number" name="'phoneNumbers[{{i}}].number'" />
           </div>
           <div style="flex: 4">
-            <select name="phoneNumbers[{{i}}].type" class="form-control">
+            <select name="phoneNumbers[{{i}}].type" class="form-control" [(ngModel)]="phoneNumber.type">
               <option value="">--</option>
-              <option *ngFor="let type of phoneTypes" value="{{type}}">{{type}}</option>
+              <option *ngFor="let type of phoneTypes" [ngValue]="type">{{type}}</option>
             </select>
           </div>
           <div style="flex: 1">
@@ -51,7 +51,7 @@
             <a (click)="removeNumber(i)">X</a>
           </div>
         </div>
-        <button (click)="addNumber()" class="btn">Lisa</button>
+        <button (click)="addNumber()" class="btn" type="button">Lisa</button>
       </div>
 
       <div class="form-group" style="width: 500px;">
@@ -61,9 +61,9 @@
             <input class="form-control" [(ngModel)]="email.email" name="'emails[{{i}}].email'" />
           </div>
           <div style="flex: 4">
-            <select name="emails[{{i}}].type" class="form-control">
+            <select name="emails[{{i}}].type" class="form-control" [(ngModel)]="email.type">
               <option value="">--</option>
-              <option *ngFor="let type of emailTypes" value="{{type}}">{{type}}</option>
+              <option *ngFor="let type of emailTypes" [ngValue]="type">{{type}}</option>
             </select>
           </div>
           <div style="flex: 1">
@@ -73,11 +73,11 @@
             <a (click)="removeEmail(i)">X</a>
           </div>
         </div>
-        <button (click)="addEmail()" class="btn">Lisa</button>
+        <button (click)="addEmail()" class="btn" type="button">Lisa</button>
       </div>
     </div>
 
-    <button class="btn btn-primary">Save</button>
+    <button class="btn btn-primary" type="submit">Save</button>
     <a [routerLink]="['/fetch-data']" class="btn btn-light">Discard</a>
 
   </form>
