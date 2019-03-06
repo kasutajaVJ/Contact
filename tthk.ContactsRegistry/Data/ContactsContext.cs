@@ -9,12 +9,14 @@ namespace tthk.ContactsRegistry.Data
 {
     public class ContactsContext : DbContext
     {
-        public DbSet<Contact> Contacts { get; set; }
+        //public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ContactEasy> ContactEasies { get; set; }
 
         public ContactsContext(DbContextOptions<ContactsContext> options) : base(options)
         {
         }
 
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Contact>()
@@ -23,8 +25,10 @@ namespace tthk.ContactsRegistry.Data
             modelBuilder.Entity<Contact>()
                 .HasMany(x => x.PhoneNumbers).WithOne(x => x.Contact).HasForeignKey(x => x.ContactId).OnDelete(DeleteBehavior.Cascade);
         }
+        */
     }
 
+    /*
     public class Contact
     {
         public Guid Id { get; set; }
@@ -69,5 +73,7 @@ namespace tthk.ContactsRegistry.Data
         Work = 1,
         Spam = 2,
         Fun = 3
-    }
+    }*/
+
 }
+

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using tthk.ContactsRegistry.Data;
+using tthk.ContactsRegistry.Services;
 
 namespace WebApplication1
 {
@@ -28,7 +29,7 @@ namespace WebApplication1
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            //services.AddScoped<IListItemsService, ListItemsService>();
+            services.AddScoped<IContactsService, ContactsService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -36,13 +37,13 @@ namespace WebApplication1
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddDbContext<TestContext>(options =>
+            services.AddDbContext<ContactsContext>(options =>
                     //options.UseInMemoryDatabase("test")
                     options.UseSqlServer(Configuration.GetConnectionString("foo"))
                     );
 
             //services.AddMiniProfiler();
-
+            /*
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x =>
                 {
@@ -56,6 +57,7 @@ namespace WebApplication1
                         ValidateAudience = false
                     };
                 });
+                */
         }
 
 
@@ -78,7 +80,7 @@ namespace WebApplication1
 
             //app.UseMiniProfiler();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

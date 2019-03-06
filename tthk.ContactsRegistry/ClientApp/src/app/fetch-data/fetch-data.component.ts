@@ -15,9 +15,11 @@ export class FetchDataComponent {
 
   private _reloadList() {
     this._http.get<IContact[]>(this._baseUrl + 'api/Contacts', {
+      
       params: {
         term: this.searchTerm
       }
+     
     })
       .subscribe(result => {
         this.contacts = result;

@@ -29,12 +29,10 @@ export class ContactDetailComponent {
   ngOnInit() {
     this.model.id = this._route.snapshot.params['id'];
 
-    console.log(this.model);
-
     if (this.model.id) {
       this._http.get<IContact>(this._baseUrl + `api/Contacts/${this.model.id}`)
         .subscribe(result => {
-          Object.assign(this.model, result);
+          Object.assign(this.model, result[0]);
           this.loading = false;
         }, error => console.error(error));
     }
@@ -60,11 +58,20 @@ export class ContactDetailComponent {
   }
   
   public save() {
-    console.log(this.model);
 
     if (this.model.id) {
 
-      this._http.post<any>(this._baseUrl + `api/Contacts/${this.model.id}`, this.model)
+      const updateData: IAddEasyContact = {
+        id: this.model.id,
+        name: this.model.name,
+        phoneNumber: this.model.phoneNumber,
+        email: this.model.email,
+        initials: this.model.initials
+      };
+
+      console.log(updateData);
+
+      this._http.post<any>(this._baseUrl + 'api/Contacts', updateData)
         .subscribe(result => {
           this._router.navigate(["fetch-data"]);
         }, error => console.error(error));
@@ -106,6 +113,14 @@ interface IPhoneNumber {
 interface IContact {
   id: string,
   name: string;
-  defaultPhoneNumber: number;
-  defaultEmail: number;
+  defaultPhoneNumber: string;
+  defaultEmail: string;
+}
+
+interface IAddEasyContact {
+  id: string,
+  name: string,
+  phoneNumber: string,
+  email: string,
+  initials: string
 }
