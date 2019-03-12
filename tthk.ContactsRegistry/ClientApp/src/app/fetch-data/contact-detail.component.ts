@@ -32,7 +32,9 @@ export class ContactDetailComponent {
     if (this.model.id) {
       this._http.get<IContact>(this._baseUrl + `api/Contacts/${this.model.id}`)
         .subscribe(result => {
+          console.log(result[0]);
           Object.assign(this.model, result[0]);
+          console.log(this.model);
           this.loading = false;
         }, error => console.error(error));
     }
@@ -59,8 +61,11 @@ export class ContactDetailComponent {
   
   public save() {
 
+    console.log(this.model);
+
     if (this.model.id) {
 
+      /*
       const updateData: IAddEasyContact = {
         id: this.model.id,
         name: this.model.name,
@@ -68,17 +73,16 @@ export class ContactDetailComponent {
         email: this.model.email,
         initials: this.model.initials
       };
+      */
 
-      console.log(updateData);
-
-      this._http.post<any>(this._baseUrl + 'api/Contacts', updateData)
+      this._http.post<any>(this._baseUrl + 'api/Contacts', this.model)
         .subscribe(result => {
           this._router.navigate(["fetch-data"]);
         }, error => console.error(error));
 
     }
     else {
-
+      console.log(this.model);
       this._http.post<any>(this._baseUrl + `api/Contacts/add`, this.model)
         .subscribe(result => {
           this._router.navigate(["fetch-data"]);

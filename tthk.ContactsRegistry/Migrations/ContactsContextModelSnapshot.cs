@@ -19,6 +19,20 @@ namespace tthk.ContactsRegistry.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("tthk.ContactsRegistry.Data.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Initials");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contacts");
+                });
+
             modelBuilder.Entity("tthk.ContactsRegistry.Data.ContactEasy", b =>
                 {
                     b.Property<Guid>("Id")
@@ -35,6 +49,62 @@ namespace tthk.ContactsRegistry.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContactEasies");
+                });
+
+            modelBuilder.Entity("tthk.ContactsRegistry.Data.ContactEmail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ContactId");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("IsDefault");
+
+                    b.Property<int?>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.ToTable("ContactEmail");
+                });
+
+            modelBuilder.Entity("tthk.ContactsRegistry.Data.ContactPhoneNumber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ContactId");
+
+                    b.Property<bool>("IsDefault");
+
+                    b.Property<string>("Number");
+
+                    b.Property<int?>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.ToTable("ContactPhoneNumber");
+                });
+
+            modelBuilder.Entity("tthk.ContactsRegistry.Data.ContactEmail", b =>
+                {
+                    b.HasOne("tthk.ContactsRegistry.Data.Contact", "Contact")
+                        .WithMany("Emails")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("tthk.ContactsRegistry.Data.ContactPhoneNumber", b =>
+                {
+                    b.HasOne("tthk.ContactsRegistry.Data.Contact", "Contact")
+                        .WithMany("PhoneNumbers")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

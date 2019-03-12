@@ -28,7 +28,7 @@ namespace tthk.ContactsRegistry.Controllers
         public async Task<IActionResult> GetContacts([FromQuery] string term)
         {
 
-            IQueryable<ContactEasy> seed = _context.ContactEasies;
+            IQueryable<Contact> seed = _context.Contacts;
 
             if (term != null)
             {
@@ -36,18 +36,19 @@ namespace tthk.ContactsRegistry.Controllers
                 {
                     seed = seed
                         .Where(x => x.Name.Contains(term)
-                        || x.PhoneNumber.Contains(term)
-                        || x.Email.Contains(term));
+                        || x.PhoneNumbers.Select(number => number.Number.Contains(term) && number.IsDefault).FirstOrDefault()
+                        || x.Emails.Select(email => email.Email.Contains(term) && email.IsDefault).FirstOrDefault());
 
                 }
             }
 
             var list = (await seed.ToArrayAsync())
-                .Select(x => new {
+                .Select(x => new
+                {
                     id = x.Id,
                     name = x.Name,
-                    defaultPhoneNumber = x.PhoneNumber,
-                    defaultEmail = x.Email
+                    defaultPhoneNumber = x.PhoneNumbers.Where(number => number.IsDefault).FirstOrDefault()?.Number,
+                    defaultEmail = x.Emails.OrderByDescending(email => email.IsDefault).FirstOrDefault()?.Email
                 });
 
             return Ok(list);
@@ -58,35 +59,53 @@ namespace tthk.ContactsRegistry.Controllers
         public async Task<IActionResult> GetContact(Guid id)
         {
 
-            IQueryable<ContactEasy> seed = _context.ContactEasies;
+            IQueryable<Contact> seed = _context.Contacts;
 
-                seed = seed
-                    .Where(x => x.Id.Equals(id));
+            seed = seed
+                .Where(x => x.Id.Equals(id));
 
 
             var list = (await seed.ToArrayAsync())
-                .Select(x => new {
+                .Select(x => new
+                {
                     id = x.Id,
                     name = x.Name,
                     initials = x.Initials,
-                    phoneNumber = x.PhoneNumber,
-                    email = x.Email
+                    phoneNumbers = 
+                new
+                {
+                    number = x.PhoneNumbers.Select(n => n.Number),
+                    isDefault = x.PhoneNumbers.Select(n => n.IsDefault),
+                    type = x.PhoneNumbers.Select(n => n.Type),
+                },
+                    emails = 
+                        new {
+                            email = x.Emails.Select(n => n.Email),
+                            isDefault = x.Emails.Select(n => n.IsDefault),
+                            type = x.Emails.Select(n => n.Type),
+                        }
                 });
 
             return Ok(list);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] ContactEasy contact)
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] Contact contact)
         {
             var contactData = await _contactsService.UpdateContact(contact.Id, contact);
-            
-            return Ok(GetDto(contactData));
+
+            return Ok(new
+            {
+                id = contact.Id,
+                name = contact.Name,
+                defaultPhoneNumber = contact.PhoneNumbers.FirstOrDefault(phone => phone.IsDefault)?.Number,
+                defaultEmail = contact.Emails.FirstOrDefault(email => email.IsDefault)?.Email
+            });
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> Add([FromBody] ContactEasy data)
+        public async Task<IActionResult> Add([FromBody] Contact data)
         {
 
             _context.Add(data);
@@ -115,53 +134,19 @@ namespace tthk.ContactsRegistry.Controllers
             };
 
         }
+
     }
 
 
-    /*
-    private ContactDto GetDto(Contact contact)
-    {
-        var phone = new PhoneNumber
-        {
 
-            Number = contact.PhoneNumber.Number,
-            Type = contact.PhoneNumber.Type,
-            Default = contact.PhoneNumber.Default,
 
-        };
-
-        return new ContactDto
-        {
-            Id = contact.Id,
-            Name = contact.Name,
-            PhoneNumber = new PhoneNumber
-            {
-
-                Number = contact.PhoneNumber.Number,
-                Type = contact.PhoneNumber.Type,
-                Default = contact.PhoneNumber.Default,
-
-            },
-            Email = new Email
-            {
-
-                    EmailAdress = contact.Email.EmailAdress,
-                    Type = contact.Email.Type,
-                    Default = contact.Email.Default,
-
-            }
-        };
-    }
-*/
-
-}
 
     public class ContactShowDto
     {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string DefaultPhoneNumber { get; set; }
-    public string DefaultEmail { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string DefaultPhoneNumber { get; set; }
+        public string DefaultEmail { get; set; }
     }
 
     public class SearchData<T> : SearchData
@@ -174,4 +159,5 @@ namespace tthk.ContactsRegistry.Controllers
     {
         public string SearchTerm { get; set; }
     }
+}
 

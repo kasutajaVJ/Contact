@@ -38,10 +38,10 @@ namespace tthk.ContactsRegistry.Data
         public string EmailAdress { get; set; }
         public ContactType Type { get; set; }
         public Boolean Default { get; set; }
-    } */
+    }*/
 }
 
-public enum ContactType {
+/*public enum ContactType {
     Home = 1,
     Work = 2,
-}
+}*/

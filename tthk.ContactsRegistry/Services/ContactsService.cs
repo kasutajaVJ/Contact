@@ -18,25 +18,25 @@ namespace tthk.ContactsRegistry.Services
         private readonly ContactsContext _context;
         public async Task DeleteItem(Guid id)
         {
-            var item = await _context.ContactEasies.FindAsync(id);
+            var item = await _context.Contacts.FindAsync(id);
             await DeleteItem(item);
         }
 
-        public async Task DeleteItem(ContactEasy item)
+        public async Task DeleteItem(Contact item)
         {
             _context.Remove(item);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ContactEasy> UpdateContact(Guid id, ContactEasy contact)
+        public async Task<Contact> UpdateContact(Guid id, Contact contact)
         {
-            var contactUpdate = await _context.ContactEasies
+            var contactUpdate = await _context.Contacts
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             
             contactUpdate.Name = contact.Name;
-            contactUpdate.Email = contact.Email;
-            contactUpdate.PhoneNumber = contact.PhoneNumber;
+            contactUpdate.Emails = contact.Emails;
+            contactUpdate.PhoneNumbers = contact.PhoneNumbers;
             contactUpdate.Initials = contact.Initials;
             
 
@@ -50,5 +50,5 @@ namespace tthk.ContactsRegistry.Services
 public interface IContactsService
 {
     Task DeleteItem(Guid id);
-    Task<ContactEasy> UpdateContact(Guid id, ContactEasy contact);
+    Task<Contact> UpdateContact(Guid id, Contact contact);
 }
