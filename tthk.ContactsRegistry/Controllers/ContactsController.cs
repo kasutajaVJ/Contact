@@ -30,8 +30,7 @@ namespace tthk.ContactsRegistry.Controllers
 
             IQueryable<Contact> seed = _context.Contacts;
 
-            if (term != null)
-            {
+            
                 if (!string.IsNullOrEmpty(term))
                 {
                     seed = seed
@@ -40,16 +39,16 @@ namespace tthk.ContactsRegistry.Controllers
                         || x.Emails.Select(email => email.Email.Contains(term) && email.IsDefault).FirstOrDefault());
 
                 }
-            }
+            
 
-            var list = (await seed.ToArrayAsync())
+            var list = await seed
                 .Select(x => new
                 {
                     id = x.Id,
                     name = x.Name,
-                    defaultPhoneNumber = x.PhoneNumbers.Where(number => number.IsDefault).FirstOrDefault()?.Number,
-                    defaultEmail = x.Emails.OrderByDescending(email => email.IsDefault).FirstOrDefault()?.Email
-                });
+                    defaultPhoneNumber = x.PhoneNumbers.OrderByDescending(number => number.IsDefault).FirstOrDefault().Number,
+                    defaultEmail = x.Emails.OrderByDescending(email => email.IsDefault).FirstOrDefault().Email
+                }).ToArrayAsync();
 
             return Ok(list);
         }
@@ -65,7 +64,7 @@ namespace tthk.ContactsRegistry.Controllers
                 .Where(x => x.Id.Equals(id));
 
 
-            var list = (await seed.ToArrayAsync())
+            var list = await seed
                 .Select(x => new
                 {
                     id = x.Id,
@@ -84,7 +83,7 @@ namespace tthk.ContactsRegistry.Controllers
                             isDefault = x.Emails.Select(n => n.IsDefault),
                             type = x.Emails.Select(n => n.Type),
                         }
-                });
+                }).ToArrayAsync();
 
             return Ok(list);
         }
